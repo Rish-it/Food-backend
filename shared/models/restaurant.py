@@ -35,6 +35,14 @@ class MenuItem(BaseModel):
     image_url = Column(String(500))
     
     
+    #relationship 
+    
+    restaurant = relationship("Restaurant", back_populates="menu_items")
+    
+    
+    
+    
+    
     
     
     

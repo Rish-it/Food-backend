@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, JSON, DECIMAL, Integer, DateTime, ForeignKey
+from sqlalchemy import Column, String, JSON, DECIMAL, Integer, DateTime, ForeignKey, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from shared.models.base import BaseModel
@@ -7,7 +7,7 @@ from shared.models.base import BaseModel
 class Order(BaseModel):
     
     
-    __tablename__="Orders"
+    __tablename__="orders"
     __table_args__={'schema': 'orders'}
     
     
@@ -18,15 +18,15 @@ class Order(BaseModel):
     total_amount = Column(DECIMAL(10, 2), nullable=False)
     delivery_address=Column(JSON, nullable=False)
     special_instructions = Column(String)
-    placed_at= Column(DateTime(timezone=True), server_default=function.now())
+    placed_at= Column(DateTime(timezone=True), server_default=func.now())
     accepted_at= Column(DateTime(timezone=True))
     delivered_at= Column(DateTime(timezone=True))
     
     
     
     #Relationship
-    order_items= relationship("orderItem", back_populates="order")
-    rating = relationship("Rating", back_populates="order", uselist="False")
+    order_items= relationship("OrderItem", back_populates="order")
+    rating = relationship("Rating", back_populates="order", uselist=False)
 
 
 class OrderItem(BaseModel):
@@ -34,13 +34,13 @@ class OrderItem(BaseModel):
     __table_args__={'schema':'orders'}
     
     
-    order_id= Column(UUID(as_uuid=True), ForeignKey('orders.orders.id'),nullable=False, unique=True)
-    menu_item_id = Column(UUID(as_uuid=True, nullable=False))
+    order_id= Column(UUID(as_uuid=True), ForeignKey('orders.orders.id'),nullable=False)
+    menu_item_id = Column(UUID(as_uuid=True), nullable=False)
     quantity = Column(Integer, nullable=False)
     unit_price = Column(DECIMAL(10, 2), nullable=False)
     total_price = Column(DECIMAL(10,2), nullable=False)
     
-    order = relationship("order", back_populates="order_items")
+    order = relationship("Order", back_populates="order_items")
     
     
     

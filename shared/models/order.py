@@ -2,8 +2,6 @@ from sqlalchemy import Column, String, JSON, DECIMAL, Integer, DateTime, Foreign
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from shared.models.base import BaseModel
-
-
 class Order(BaseModel):
     
     
@@ -13,7 +11,7 @@ class Order(BaseModel):
     
     user_id = Column(UUID(as_uuid=True), nullable=False, index=True)
     restaurant_id = Column(UUID(as_uuid=True), nullable=False, index=True)
-    delivery_agent_id = Column(UUID(as_uuid=True), nullable=False, index=True)
+    delivery_agent_id = Column(UUID(as_uuid=True), nullable=True, index=True)
     status= Column(String(50), default='pending', index=True)
     total_amount = Column(DECIMAL(10, 2), nullable=False)
     delivery_address=Column(JSON, nullable=False)
@@ -27,8 +25,6 @@ class Order(BaseModel):
     #Relationship
     order_items= relationship("OrderItem", back_populates="order")
     rating = relationship("Rating", back_populates="order", uselist=False)
-
-
 class OrderItem(BaseModel):
     __tablename__="order_items"
     __table_args__={'schema':'orders'}

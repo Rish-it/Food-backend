@@ -2,8 +2,6 @@ from sqlalchemy import Column, String, JSON, Boolean, DECIMAL, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from shared.models.base import BaseModel
-
-
 class Restaurant(BaseModel):
     __tablename__ = "restaurants"
     __table_args__ = {'schema': 'restaurants'}
@@ -17,7 +15,7 @@ class Restaurant(BaseModel):
     operation_hours  = Column(JSON)
     
     #relationship to menu 
-    menu_items = relationship("MenuItem", back_populates="restaurants")
+    menu_items = relationship("MenuItem", back_populates="restaurant")
     
     
     
@@ -36,7 +34,6 @@ class MenuItem(BaseModel):
     
     
     #relationship 
-    
     restaurant = relationship("Restaurant", back_populates="menu_items")
     
     

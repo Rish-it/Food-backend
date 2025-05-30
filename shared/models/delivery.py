@@ -1,8 +1,6 @@
 from sqlalchemy import Column, String, JSON, Boolean
 from shared.models.base import BaseModel
 
-
-
 class DeliveryAgent(BaseModel):
     __tablename__="delivery_agents"
     __table_args__={'schema':'delivery'}

@@ -1,0 +1,1155 @@
+{
+	"info": {
+		"_postman_id": "food-delivery-microservices",
+		"name": "Food Delivery Microservices API",
+		"description": "Complete API collection for testing User Service, Restaurant Service, and Delivery Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "food-delivery-v1"
+	},
+	"item": [
+		{
+			"name": "User Service",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{user_service_url}}/health",
+							"host": ["{{user_service_url}}"],
+							"path": ["health"]
+						}
+					}
+				},
+				{
+					"name": "Get Root Info",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{user_service_url}}/",
+							"host": ["{{user_service_url}}"],
+							"path": [""]
+						}
+					}
+				},
+				{
+					"name": "List Online Restaurants",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{user_service_url}}/restaurants/",
+							"host": ["{{user_service_url}}"],
+							"path": ["restaurants", ""]
+						}
+					}
+				},
+				{
+					"name": "Get Restaurant Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{user_service_url}}/restaurants/{{restaurant_id}}",
+							"host": ["{{user_service_url}}"],
+							"path": ["restaurants", "{{restaurant_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Place Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"restaurant_id\": \"{{restaurant_id}}\",\n  \"delivery_address\": {\n    \"street\": \"123 Main St\",\n    \"city\": \"Foodville\",\n    \"state\": \"CA\",\n    \"zip_code\": \"90210\"\n  },\n  \"special_instructions\": \"Please ring the doorbell\",\n  \"items\": [\n    {\n      \"menu_item_id\": \"{{menu_item_id}}\",\n      \"quantity\": 2\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{user_service_url}}/orders/?user_id={{user_id}}",
+							"host": ["{{user_service_url}}"],
+							"path": ["orders", ""],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get User Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{user_service_url}}/orders/user/{{user_id}}",
+							"host": ["{{user_service_url}}"],
+							"path": ["orders", "user", "{{user_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Get Order Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{user_service_url}}/orders/{{order_id}}",
+							"host": ["{{user_service_url}}"],
+							"path": ["orders", "{{order_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Submit Rating",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"restaurant_rating\": 5,\n  \"delivery_rating\": 4,\n  \"restaurant_review\": \"Excellent food and service!\",\n  \"delivery_review\": \"Fast delivery, friendly driver\"\n}"
+						},
+						"url": {
+							"raw": "{{user_service_url}}/ratings/?user_id={{user_id}}&order_id={{order_id}}",
+							"host": ["{{user_service_url}}"],
+							"path": ["ratings", ""],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								},
+								{
+									"key": "order_id",
+									"value": "{{order_id}}"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Order Rating",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{user_service_url}}/ratings/order/{{order_id}}",
+							"host": ["{{user_service_url}}"],
+							"path": ["ratings", "order", "{{order_id}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Restaurant Service",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{restaurant_service_url}}/health",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["health"]
+						}
+					}
+				},
+				{
+					"name": "Register Restaurant",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.environment.set('restaurant_id', responseJson.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Pizza Palace\",\n  \"email\": \"pizzapalace@example.com\",\n  \"phone\": \"555-123-4567\",\n  \"address\": {\n    \"street\": \"456 Restaurant Ave\",\n    \"city\": \"Foodville\",\n    \"state\": \"CA\",\n    \"zip_code\": \"90210\"\n  },\n  \"cuisine_type\": \"Italian\",\n  \"operation_hours\": {\n    \"monday\": {\"open\": \"11:00\", \"close\": \"22:00\"},\n    \"tuesday\": {\"open\": \"11:00\", \"close\": \"22:00\"},\n    \"wednesday\": {\"open\": \"11:00\", \"close\": \"22:00\"},\n    \"thursday\": {\"open\": \"11:00\", \"close\": \"22:00\"},\n    \"friday\": {\"open\": \"11:00\", \"close\": \"23:00\"},\n    \"saturday\": {\"open\": \"10:00\", \"close\": \"23:00\"},\n    \"sunday\": {\"open\": \"12:00\", \"close\": \"21:00\"}\n  }\n}"
+						},
+						"url": {
+							"raw": "{{restaurant_service_url}}/restaurants/",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["restaurants", ""]
+						}
+					}
+				},
+				{
+					"name": "Get All Restaurants",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{restaurant_service_url}}/restaurants/",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["restaurants", ""]
+						}
+					}
+				},
+				{
+					"name": "Get Online Restaurants Only",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{restaurant_service_url}}/restaurants/?online_only=true",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["restaurants", ""],
+							"query": [
+								{
+									"key": "online_only",
+									"value": "true"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Restaurant Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{restaurant_service_url}}/restaurants/{{restaurant_id}}",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["restaurants", "{{restaurant_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Update Restaurant",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Pizza Palace - Updated\",\n  \"cuisine_type\": \"Italian & Mediterranean\"\n}"
+						},
+						"url": {
+							"raw": "{{restaurant_service_url}}/restaurants/{{restaurant_id}}",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["restaurants", "{{restaurant_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Set Restaurant Online",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{restaurant_service_url}}/restaurants/{{restaurant_id}}/status?is_online=true",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["restaurants", "{{restaurant_id}}", "status"],
+							"query": [
+								{
+									"key": "is_online",
+									"value": "true"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Set Restaurant Offline",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{restaurant_service_url}}/restaurants/{{restaurant_id}}/status?is_online=false",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["restaurants", "{{restaurant_id}}", "status"],
+							"query": [
+								{
+									"key": "is_online",
+									"value": "false"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Add Menu Item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.environment.set('menu_item_id', responseJson.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Margherita Pizza\",\n  \"description\": \"Classic pizza with fresh mozzarella, tomatoes, and basil\",\n  \"price\": 18.99,\n  \"category\": \"Main Course\",\n  \"image_url\": \"https://example.com/margherita.jpg\"\n}"
+						},
+						"url": {
+							"raw": "{{restaurant_service_url}}/menu/{{restaurant_id}}/items",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["menu", "{{restaurant_id}}", "items"]
+						}
+					}
+				},
+				{
+					"name": "Get Restaurant Menu",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{restaurant_service_url}}/menu/{{restaurant_id}}/items",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["menu", "{{restaurant_id}}", "items"]
+						}
+					}
+				},
+				{
+					"name": "Get Available Menu Items Only",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{restaurant_service_url}}/menu/{{restaurant_id}}/items?available_only=true",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["menu", "{{restaurant_id}}", "items"],
+							"query": [
+								{
+									"key": "available_only",
+									"value": "true"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Menu Item",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Margherita Pizza - Special\",\n  \"price\": 19.99,\n  \"description\": \"Classic pizza with fresh mozzarella, tomatoes, basil, and special sauce\"\n}"
+						},
+						"url": {
+							"raw": "{{restaurant_service_url}}/menu/items/{{menu_item_id}}",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["menu", "items", "{{menu_item_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Toggle Menu Item Availability",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{restaurant_service_url}}/menu/items/{{menu_item_id}}/availability?is_available=false",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["menu", "items", "{{menu_item_id}}", "availability"],
+							"query": [
+								{
+									"key": "is_available",
+									"value": "false"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Restaurant Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{restaurant_service_url}}/orders/{{restaurant_id}}",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["orders", "{{restaurant_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Get Pending Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{restaurant_service_url}}/orders/{{restaurant_id}}/pending",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["orders", "{{restaurant_id}}", "pending"]
+						}
+					}
+				},
+				{
+					"name": "Get Active Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{restaurant_service_url}}/orders/{{restaurant_id}}/active",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["orders", "{{restaurant_id}}", "active"]
+						}
+					}
+				},
+				{
+					"name": "Accept Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{restaurant_service_url}}/orders/order/{{order_id}}/restaurant/{{restaurant_id}}/accept?estimated_prep_time=25",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["orders", "order", "{{order_id}}", "restaurant", "{{restaurant_id}}", "accept"],
+							"query": [
+								{
+									"key": "estimated_prep_time",
+									"value": "25"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Reject Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{restaurant_service_url}}/orders/order/{{order_id}}/restaurant/{{restaurant_id}}/reject?reason=Out of ingredients",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["orders", "order", "{{order_id}}", "restaurant", "{{restaurant_id}}", "reject"],
+							"query": [
+								{
+									"key": "reason",
+									"value": "Out of ingredients"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Mark Order Ready",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{restaurant_service_url}}/orders/order/{{order_id}}/restaurant/{{restaurant_id}}/ready",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["orders", "order", "{{order_id}}", "restaurant", "{{restaurant_id}}", "ready"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Delivery Service",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{delivery_service_url}}/health",
+							"host": ["{{delivery_service_url}}"],
+							"path": ["health"]
+						}
+					}
+				},
+				{
+					"name": "Register Delivery Agent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.environment.set('delivery_agent_id', responseJson.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Delivery\",\n  \"email\": \"john@delivery.com\",\n  \"phone\": \"555-987-6543\",\n  \"vehicle_type\": \"motorcycle\",\n  \"current_location\": {\n    \"latitude\": 34.0522,\n    \"longitude\": -118.2437,\n    \"address\": \"Los Angeles, CA\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{delivery_service_url}}/agents/",
+							"host": ["{{delivery_service_url}}"],
+							"path": ["agents", ""]
+						}
+					}
+				},
+				{
+					"name": "Get All Delivery Agents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{delivery_service_url}}/agents/",
+							"host": ["{{delivery_service_url}}"],
+							"path": ["agents", ""]
+						}
+					}
+				},
+				{
+					"name": "Get Available Agents Only",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{delivery_service_url}}/agents/?available_only=true",
+							"host": ["{{delivery_service_url}}"],
+							"path": ["agents", ""],
+							"query": [
+								{
+									"key": "available_only",
+									"value": "true"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Available Agents List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{delivery_service_url}}/agents/available/list",
+							"host": ["{{delivery_service_url}}"],
+							"path": ["agents", "available", "list"]
+						}
+					}
+				},
+				{
+					"name": "Get Delivery Agent Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{delivery_service_url}}/agents/{{delivery_agent_id}}",
+							"host": ["{{delivery_service_url}}"],
+							"path": ["agents", "{{delivery_agent_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Update Delivery Agent",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Delivery - Senior\",\n  \"vehicle_type\": \"car\"\n}"
+						},
+						"url": {
+							"raw": "{{delivery_service_url}}/agents/{{delivery_agent_id}}",
+							"host": ["{{delivery_service_url}}"],
+							"path": ["agents", "{{delivery_agent_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Toggle Agent Availability",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{delivery_service_url}}/agents/{{delivery_agent_id}}/availability?is_available=false",
+							"host": ["{{delivery_service_url}}"],
+							"path": ["agents", "{{delivery_agent_id}}", "availability"],
+							"query": [
+								{
+									"key": "is_available",
+									"value": "false"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Agent Location",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"latitude\": 34.0522,\n  \"longitude\": -118.2437,\n  \"address\": \"Downtown LA, CA\"\n}"
+						},
+						"url": {
+							"raw": "{{delivery_service_url}}/agents/{{delivery_agent_id}}/location",
+							"host": ["{{delivery_service_url}}"],
+							"path": ["agents", "{{delivery_agent_id}}", "location"]
+						}
+					}
+				},
+				{
+					"name": "Get Agent Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{delivery_service_url}}/orders/agent/{{delivery_agent_id}}",
+							"host": ["{{delivery_service_url}}"],
+							"path": ["orders", "agent", "{{delivery_agent_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Get Order Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{delivery_service_url}}/orders/{{order_id}}",
+							"host": ["{{delivery_service_url}}"],
+							"path": ["orders", "{{order_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Mark Order Picked Up",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{delivery_service_url}}/orders/{{order_id}}/agent/{{delivery_agent_id}}/pickup",
+							"host": ["{{delivery_service_url}}"],
+							"path": ["orders", "{{order_id}}", "agent", "{{delivery_agent_id}}", "pickup"]
+						}
+					}
+				},
+				{
+					"name": "Mark Order On The Way",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{delivery_service_url}}/orders/{{order_id}}/agent/{{delivery_agent_id}}/on-the-way",
+							"host": ["{{delivery_service_url}}"],
+							"path": ["orders", "{{order_id}}", "agent", "{{delivery_agent_id}}", "on-the-way"]
+						}
+					}
+				},
+				{
+					"name": "Mark Order Delivered",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{delivery_service_url}}/orders/{{order_id}}/agent/{{delivery_agent_id}}/delivered",
+							"host": ["{{delivery_service_url}}"],
+							"path": ["orders", "{{order_id}}", "agent", "{{delivery_agent_id}}", "delivered"]
+						}
+					}
+				},
+				{
+					"name": "Update Delivery Status (Custom)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"on_the_way\",\n  \"location\": {\n    \"latitude\": 34.0522,\n    \"longitude\": -118.2437\n  },\n  \"notes\": \"En route to customer\"\n}"
+						},
+						"url": {
+							"raw": "{{delivery_service_url}}/orders/{{order_id}}/agent/{{delivery_agent_id}}/status",
+							"host": ["{{delivery_service_url}}"],
+							"path": ["orders", "{{order_id}}", "agent", "{{delivery_agent_id}}", "status"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "End-to-End Workflow",
+			"item": [
+				{
+					"name": "1. Register Restaurant",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Restaurant registered successfully', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.environment.set('restaurant_id', responseJson.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"E2E Test Restaurant\",\n  \"email\": \"e2e@restaurant.com\",\n  \"phone\": \"555-111-2222\",\n  \"address\": {\n    \"street\": \"123 E2E St\",\n    \"city\": \"Test City\",\n    \"state\": \"TC\",\n    \"zip_code\": \"12345\"\n  },\n  \"cuisine_type\": \"Test Cuisine\"\n}"
+						},
+						"url": {
+							"raw": "{{restaurant_service_url}}/restaurants/",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["restaurants", ""]
+						}
+					}
+				},
+				{
+					"name": "2. Add Menu Item",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Menu item added successfully', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.environment.set('menu_item_id', responseJson.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"E2E Test Item\",\n  \"description\": \"Test food item for E2E testing\",\n  \"price\": 12.99,\n  \"category\": \"Test Category\"\n}"
+						},
+						"url": {
+							"raw": "{{restaurant_service_url}}/menu/{{restaurant_id}}/items",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["menu", "{{restaurant_id}}", "items"]
+						}
+					}
+				},
+				{
+					"name": "3. Set Restaurant Online",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Restaurant set online successfully', function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{restaurant_service_url}}/restaurants/{{restaurant_id}}/status?is_online=true",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["restaurants", "{{restaurant_id}}", "status"],
+							"query": [
+								{
+									"key": "is_online",
+									"value": "true"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "4. Register Delivery Agent",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Delivery agent registered successfully', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.environment.set('delivery_agent_id', responseJson.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"E2E Test Agent\",\n  \"email\": \"e2e@delivery.com\",\n  \"phone\": \"555-333-4444\",\n  \"vehicle_type\": \"motorcycle\"\n}"
+						},
+						"url": {
+							"raw": "{{delivery_service_url}}/agents/",
+							"host": ["{{delivery_service_url}}"],
+							"path": ["agents", ""]
+						}
+					}
+				},
+				{
+					"name": "5. Browse Restaurants (User)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Can browse restaurants', function () {",
+									"    pm.response.to.have.status(200);",
+									"    const restaurants = pm.response.json();",
+									"    pm.expect(restaurants.length).to.be.greaterThan(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{user_service_url}}/restaurants/",
+							"host": ["{{user_service_url}}"],
+							"path": ["restaurants", ""]
+						}
+					}
+				},
+				{
+					"name": "6. Place Order (User)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Order placed successfully', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"if (pm.response.code === 201) {",
+									"    const responseJson = pm.response.json();",
+									"    pm.environment.set('order_id', responseJson.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"restaurant_id\": \"{{restaurant_id}}\",\n  \"delivery_address\": {\n    \"street\": \"789 E2E Customer St\",\n    \"city\": \"Customer City\",\n    \"state\": \"CC\",\n    \"zip_code\": \"67890\"\n  },\n  \"special_instructions\": \"E2E test order\",\n  \"items\": [\n    {\n      \"menu_item_id\": \"{{menu_item_id}}\",\n      \"quantity\": 1\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{user_service_url}}/orders/?user_id={{user_id}}",
+							"host": ["{{user_service_url}}"],
+							"path": ["orders", ""],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "7. Accept Order (Restaurant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Order accepted successfully', function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{restaurant_service_url}}/orders/order/{{order_id}}/restaurant/{{restaurant_id}}/accept",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["orders", "order", "{{order_id}}", "restaurant", "{{restaurant_id}}", "accept"]
+						}
+					}
+				},
+				{
+					"name": "8. Mark Order Ready (Restaurant)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Order marked ready successfully', function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{restaurant_service_url}}/orders/order/{{order_id}}/restaurant/{{restaurant_id}}/ready",
+							"host": ["{{restaurant_service_url}}"],
+							"path": ["orders", "order", "{{order_id}}", "restaurant", "{{restaurant_id}}", "ready"]
+						}
+					}
+				},
+				{
+					"name": "9. Pick Up Order (Delivery)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Order picked up successfully', function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{delivery_service_url}}/orders/{{order_id}}/agent/{{delivery_agent_id}}/pickup",
+							"host": ["{{delivery_service_url}}"],
+							"path": ["orders", "{{order_id}}", "agent", "{{delivery_agent_id}}", "pickup"]
+						}
+					}
+				},
+				{
+					"name": "10. Deliver Order (Delivery)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Order delivered successfully', function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{delivery_service_url}}/orders/{{order_id}}/agent/{{delivery_agent_id}}/delivered",
+							"host": ["{{delivery_service_url}}"],
+							"path": ["orders", "{{order_id}}", "agent", "{{delivery_agent_id}}", "delivered"]
+						}
+					}
+				},
+				{
+					"name": "11. Submit Rating (User)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Rating submitted successfully', function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"restaurant_rating\": 5,\n  \"delivery_rating\": 5,\n  \"restaurant_review\": \"E2E test - excellent!\",\n  \"delivery_review\": \"E2E test - fast delivery!\"\n}"
+						},
+						"url": {
+							"raw": "{{user_service_url}}/ratings/?user_id={{user_id}}&order_id={{order_id}}",
+							"host": ["{{user_service_url}}"],
+							"path": ["ratings", ""],
+							"query": [
+								{
+									"key": "user_id",
+									"value": "{{user_id}}"
+								},
+								{
+									"key": "order_id",
+									"value": "{{order_id}}"
+								}
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "user_service_url",
+			"value": "http://localhost:8001",
+			"type": "string"
+		},
+		{
+			"key": "restaurant_service_url",
+			"value": "http://localhost:8002",
+			"type": "string"
+		},
+		{
+			"key": "delivery_service_url",
+			"value": "http://localhost:8003",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "550e8400-e29b-41d4-a716-446655440000",
+			"type": "string"
+		},
+		{
+			"key": "restaurant_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "menu_item_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "delivery_agent_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "order_id",
+			"value": "",
+			"type": "string"
+		}
+	]
+} 

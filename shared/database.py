@@ -2,12 +2,8 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sess
 from sqlalchemy.orm import DeclarativeBase
 from shared.config import settings
 import logging
-
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
 engine = create_async_engine(
     settings.database_url,
     echo=True,
@@ -32,16 +28,7 @@ async def get_db() -> AsyncSession:
             yield session
         except Exception as e:
             await session.rollback()
-            logger.error(f"Database session error:{e}")
+            logger.error(f"Database session error: {e}")
             raise
         finally:
             await session.close()    
-
-
-
-
-
-
-
-
-

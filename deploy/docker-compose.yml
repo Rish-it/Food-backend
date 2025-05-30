@@ -1,0 +1,121 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:14-alpine
+    container_name: food_delivery_db
+    environment:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app_network
+
+  # User Service
+  user_service:
+    build:
+      context: ../user_service
+      dockerfile: Dockerfile
+    container_name: user_service
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/mydb
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    networks:
+      - app_network
+
+  # Restaurant Service
+  restaurant_service:
+    build:
+      context: ../restaurant_service
+      dockerfile: Dockerfile
+    container_name: restaurant_service
+    ports:
+      - "8002:8002"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/mydb
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    networks:
+      - app_network
+
+  # Delivery Service
+  delivery_service:
+    build:
+      context: ../delivery_service
+      dockerfile: Dockerfile
+    container_name: delivery_service
+    ports:
+      - "8003:8003"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/mydb
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+    networks:
+      - app_network
+
+  # Database Migration Service (runs once to set up tables)
+  db_migration:
+    build:
+      context: .
+      dockerfile: Dockerfile.user_service  # Reuse user service image for migrations
+    container_name: db_migration
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/mydb
+    command: ["alembic", "upgrade", "head"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - food_delivery_network
+    restart: "no"
+
+  # Redis (for future caching needs)
+  redis:
+    image: redis:alpine
+    container_name: food_delivery_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - app_network
+
+  # Nginx Load Balancer/API Gateway (for future use)
+  nginx:
+    image: nginx:alpine
+    container_name: food_delivery_gateway
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - user_service
+      - restaurant_service
+      - delivery_service
+    networks:
+      - app_network
+
+volumes:
+  postgres_data:
+
+networks:
+  app_network:
+    driver: bridge 

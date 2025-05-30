@@ -23,7 +23,6 @@ RUN mkdir -p /app/logs
 
 # Set environment variables
 ENV PYTHONPATH=/app
-ENV DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/food_delivery
 ENV USER_SERVICE_PORT=8001
 ENV RESTAURANT_SERVICE_PORT=8002
 ENV DELIVERY_SERVICE_PORT=8003
